@@ -2,8 +2,6 @@
 
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diffbot">
 
-    <!-- INCLUDE INERTIAL MACROS -->
-    <xacro:include filename="inertial_macros.xacro"/>
 
     <!-- COLOR DEFINITIONS -->
     <material name="white">
@@ -15,13 +13,27 @@
     </material>
 
     <material name="blue">
-        <color rgba="0.2 0.2 1 1"/>
+        <color rgba="0 0 1 1"/>
     </material>
 
     <material name="black">
         <color rgba="0 0 0 1"/>
     </material>
-    
+
+    <material name="brown">
+        <color rgba="0.7 0.55 0.3 1"/>
+    </material>
+
+    <!-- ________________________XACRO FILE DEPENDENCIES________________________ -->
+
+    <!-- INCLUDE INERTIAL MACROS -->
+    <xacro:include filename="$(find diffbot_description)/urdf/inertial_macros.xacro"/>
+
+    <!-- GAZEBO -->
+    <xacro:include filename="$(find diffbot_description)/urdf/diffbot_gazebo.xacro"/>
+
+
+    <!-- ________________________DIFFBOT URDF MODEL________________________ -->
 
     <!-- BASE LINK -->
     <link name="base_link"/>
@@ -39,7 +51,7 @@
             <geometry>
                 <box size="0.3 0.22 0.08"/>
             </geometry>
-            <material name="white"/>
+            <material name="brown"/>
         </visual>
         <collision>
             <origin xyz="0 0 0"/>
