@@ -29,6 +29,9 @@
     <!-- ROS2 VERSION -->
     <xacro:arg name="is_ignition" default="true"/>
 
+    <!-- START SIMULATION OR REAL ROBOT -->
+    <xacro:arg name="is_sim" default="true"/>
+
     <!-- ________________________ XACRO FILE DEPENDENCIES ________________________ -->
 
     <!-- INCLUDE INERTIAL MACROS -->
