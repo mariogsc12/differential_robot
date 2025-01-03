@@ -2,7 +2,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
-
+from launch_ros.actions import Node
 
 def generate_launch_description():
 
@@ -34,8 +34,23 @@ def generate_launch_description():
         )
     )
 
+    trajectory = Node(
+        package="diffbot_utils",
+        executable="trajectory_drawer"
+    )
+
+    rviz = Node(
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="screen",
+        arguments=["-d", os.path.join(get_package_share_directory("diffbot_bringup"),"rviz","simulated_robot.rviz")]
+    )
+
     return LaunchDescription([
         gazebo,
         controller,
-        joystick
+        joystick,
+        trajectory,
+        rviz
     ])
