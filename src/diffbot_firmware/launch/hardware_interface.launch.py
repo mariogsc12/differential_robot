@@ -9,12 +9,16 @@ def generate_launch_description():
     diffbot_description_dir = get_package_share_directory("diffbot_description")
 
     robot_description = ParameterValue(
-    Command([
-        "xacro ", 
-        os.path.join(diffbot_description_dir, "urdf", "diffbot.urdf.xacro"),
-        " is_sim:=False",
-    ]),
-    value_type=str)
+        Command([
+            "xacro ", 
+            os.path.join(get_package_share_directory("diffbot_description"),
+                        "urdf", 
+                        "diffbot.urdf.xacro"
+            ),
+            " is_sim:=False",
+        ]),
+        value_type=str
+    )
     
     robot_state_publisher = Node(
         package="robot_state_publisher",
@@ -28,11 +32,11 @@ def generate_launch_description():
         parameters=[
             {"robot_description": robot_description,
              "use_sim_time": False},
-             os.path.join(
+            os.path.join(
                 get_package_share_directory("diffbot_controller"),
                 "config",
                 "diffbot_controllers.yaml"
-             )
+            )
         ]
     )
 

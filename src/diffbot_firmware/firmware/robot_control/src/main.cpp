@@ -16,6 +16,7 @@ unsigned long last_millis = 0;
 const unsigned long interval = 100;
 
 // Interpret Serial Messages
+char chr=0;
 bool is_right_wheel_cmd = false;
 bool is_left_wheel_cmd = false;
 bool is_right_wheel_forward = true;
@@ -44,11 +45,12 @@ double Kd_l = 0.1;
 
 // Controller
 PID rightMotor(&right_wheel_meas_vel, &right_wheel_cmd, &right_wheel_cmd_vel, Kp_r, Ki_r, Kd_r, DIRECT);
-// PID leftMotor(&left_wheel_meas_vel, &left_wheel_cmd, &left_wheel_cmd_vel, Kp_l, Ki_l, Kd_l, DIRECT);
+PID leftMotor(&left_wheel_meas_vel, &left_wheel_cmd, &left_wheel_cmd_vel, Kp_l, Ki_l, Kd_l, DIRECT);
 
 void SerialPlotter(){
-    Serial.print(">left_wheel_cmd:"); Serial.println(left_wheel_cmd);
-    Serial.print(">right_wheel_cmd:"); Serial.println(right_wheel_cmd);
+  Serial.print(">serial_char_msg:"); Serial.println(chr);
+  Serial.print(">left_wheel_cmd:"); Serial.println(left_wheel_cmd);
+  Serial.print(">right_wheel_cmd:"); Serial.println(right_wheel_cmd);
 }
 
 // New pulse from Right Wheel Encoder
@@ -88,21 +90,21 @@ void setup() {
   // pinMode(L298N_enB, OUTPUT);
   pinMode(L298N_in1, OUTPUT);
   pinMode(L298N_in2, OUTPUT);
-  // pinMode(L298N_in3, OUTPUT);
-  // pinMode(L298N_in4, OUTPUT);
+  pinMode(L298N_in3, OUTPUT);
+  pinMode(L298N_in4, OUTPUT);
 
   // Set Motor Rotation Direction
   digitalWrite(L298N_in1, HIGH);
   digitalWrite(L298N_in2, LOW);
-  // digitalWrite(L298N_in3, HIGH);
-  // digitalWrite(L298N_in4, LOW);
+  digitalWrite(L298N_in3, HIGH);
+  digitalWrite(L298N_in4, LOW);
 
   rightMotor.SetMode(AUTOMATIC);
-  // leftMotor.SetMode(AUTOMATIC);
+  leftMotor.SetMode(AUTOMATIC);
   Serial.begin(115200);
 
   // Init encoders
-  // pinMode(right_encoder_phaseB, INPUT);
+  pinMode(right_encoder_phaseB, INPUT);
   pinMode(left_encoder_phaseB, INPUT);
   // Set Callback for Wheel Encoders Pulse
   attachInterrupt(digitalPinToInterrupt(right_encoder_phaseA), rightEncoderCallback, RISING);
@@ -113,7 +115,7 @@ void loop() {
   // Read and Interpret Wheel Velocity Commands
   if (Serial.available())
   {
-    char chr = Serial.read();
+    chr = Serial.read();
     // Right Wheel Motor
     if(chr == 'r')
     {
@@ -142,8 +144,8 @@ void loop() {
       else if(is_left_wheel_cmd && !is_left_wheel_forward)
       {
         // change the direction of the rotation
-        // digitalWrite(L298N_in3, HIGH - digitalRead(L298N_in3));
-        // digitalWrite(L298N_in4, HIGH - digitalRead(L298N_in4));
+        digitalWrite(L298N_in3, HIGH - digitalRead(L298N_in3));
+        digitalWrite(L298N_in4, HIGH - digitalRead(L298N_in4));
         is_left_wheel_forward = true;
       }
     }
@@ -160,8 +162,8 @@ void loop() {
       else if(is_left_wheel_cmd && is_left_wheel_forward)
       {
         // change the direction of the rotation
-        // digitalWrite(L298N_in3, HIGH - digitalRead(L298N_in3));
-        // digitalWrite(L298N_in4, HIGH - digitalRead(L298N_in4));
+        digitalWrite(L298N_in3, HIGH - digitalRead(L298N_in3));
+        digitalWrite(L298N_in4, HIGH - digitalRead(L298N_in4));
         is_left_wheel_forward = false;
       }
     }
@@ -205,7 +207,7 @@ void loop() {
     left_wheel_meas_vel = (10 * left_encoder_counter * (60.0/385.0)) * 0.10472;
     
     rightMotor.Compute();
-    //leftMotor.Compute();
+    leftMotor.Compute();
 
     // Ignore commands smaller than inertia
     if(right_wheel_cmd_vel == 0.0)
@@ -226,7 +228,7 @@ void loop() {
     left_encoder_counter = 0;
 
     analogWrite(L298N_enA, abs(right_wheel_cmd));
-    // analogWrite(L298N_enB, abs(saturate(left_wheel_cmd,-255,255)));
+    analogWrite(L298N_enB, abs(saturate(left_wheel_cmd,-255,255)));
   }
-  SerialPlotter();
+  //SerialPlotter();
 }
