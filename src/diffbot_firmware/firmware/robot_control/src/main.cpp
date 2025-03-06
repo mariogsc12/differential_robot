@@ -48,7 +48,7 @@ PID rightMotor(&right_wheel_meas_vel, &right_wheel_cmd, &right_wheel_cmd_vel, Kp
 PID leftMotor(&left_wheel_meas_vel, &left_wheel_cmd, &left_wheel_cmd_vel, Kp_l, Ki_l, Kd_l, DIRECT);
 
 void SerialPlotter(){
-  Serial.print(">serial_char_msg:"); Serial.println(chr);
+  //Serial.print(">serial_char_msg:"); Serial.println(chr);
   Serial.print(">left_wheel_cmd:"); Serial.println(left_wheel_cmd);
   Serial.print(">right_wheel_cmd:"); Serial.println(right_wheel_cmd);
 }
@@ -85,6 +85,8 @@ void leftEncoderCallback()
 // ------------------------------------------------------------------------------- //
 
 void setup() {
+  Serial.begin(115200);
+  Serial.print("Setup");
   // Init L298N H-Bridge Connection PINs
   pinMode(L298N_enA, OUTPUT);
   // pinMode(L298N_enB, OUTPUT);
@@ -101,7 +103,7 @@ void setup() {
 
   rightMotor.SetMode(AUTOMATIC);
   leftMotor.SetMode(AUTOMATIC);
-  Serial.begin(115200);
+  
 
   // Init encoders
   pinMode(right_encoder_phaseB, INPUT);
@@ -230,5 +232,5 @@ void loop() {
     analogWrite(L298N_enA, abs(right_wheel_cmd));
     analogWrite(L298N_enB, abs(saturate(left_wheel_cmd,-255,255)));
   }
-  //SerialPlotter();
+  SerialPlotter();
 }
