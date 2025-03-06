@@ -49,8 +49,10 @@ PID leftMotor(&left_wheel_meas_vel, &left_wheel_cmd, &left_wheel_cmd_vel, Kp_l, 
 
 void SerialPlotter(){
   //Serial.print(">serial_char_msg:"); Serial.println(chr);
-  Serial.print(">left_wheel_cmd:"); Serial.println(left_wheel_cmd);
-  Serial.print(">right_wheel_cmd:"); Serial.println(right_wheel_cmd);
+  //Serial.print(">left_wheel_cmd:"); Serial.println(left_wheel_cmd);
+  //Serial.print(">right_wheel_cmd:"); Serial.println(right_wheel_cmd);
+  Serial.print(">encoder_left:"); Serial.println(left_wheel_meas_vel);
+  Serial.print(">encoder_right:"); Serial.println(right_wheel_meas_vel);
 }
 
 // New pulse from Right Wheel Encoder
@@ -86,7 +88,7 @@ void leftEncoderCallback()
 
 void setup() {
   Serial.begin(115200);
-  Serial.print("Setup");
+  Serial.println("Initializing robot...");
   // Init L298N H-Bridge Connection PINs
   pinMode(L298N_enA, OUTPUT);
   // pinMode(L298N_enB, OUTPUT);
@@ -223,7 +225,6 @@ void loop() {
 
     string encoder_read = "r" + string(right_wheel_sign) + to_string(right_wheel_meas_vel) +
                         ",l" + string(left_wheel_sign) + to_string(left_wheel_meas_vel) + ",";
-    // Serial.println(encoder_read);
 
     last_millis = current_millis;
     right_encoder_counter = 0;
