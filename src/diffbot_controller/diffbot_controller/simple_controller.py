@@ -92,10 +92,8 @@ class SimpleController(Node):
         self.odom_msg_.pose.pose.position.x = self.x_
         self.odom_msg_.pose.pose.position.y = self.y_
         self.odom_msg_.twist.twist.linear.x = linear
-        self.odom_msg_.twist.twist.angular.z = angular
-
+        self.odom_msg_.twist.twist.angular.z = angular 
         self.odom_pub_.publish(self.odom_msg_)
-
 
 
 
