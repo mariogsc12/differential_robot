@@ -16,7 +16,7 @@
 // Wheel Encoders Connection PINs
 // ---- right motor -----
 #define right_encoder_phaseA 7  // Interrupt 
-#define right_encoder_phaseB 8  
+#define right_encoder_phaseB 18  
 
 // ---- left motor -----
 #define left_encoder_phaseA 1   // Interrupt

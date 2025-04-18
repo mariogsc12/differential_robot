@@ -123,7 +123,7 @@ namespace diffbot_firmware{
                     velocity_states_.at(0) = multiplier * std::stod(res.substr(2, res.size()));
                     position_states_.at(0) += velocity_states_.at(0)*dt; 
                 }
-                else if(res.at(1) == 'l'){
+                else if(res.at(0) == 'l'){
                     velocity_states_.at(1) = multiplier * std::stod(res.substr(2, res.size()));
                     position_states_.at(1) += velocity_states_.at(1)*dt;
                 }
