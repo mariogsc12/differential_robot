@@ -9,3 +9,4 @@ log/
 
 # Ignore Visual Studio Code settings
 .vscode/
+*.json
