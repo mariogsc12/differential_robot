@@ -1,11 +1,14 @@
 # Ignore build artifacts
 build/
+build/*
 
 # Ignore install directory
 install/
+install/*
 
 # Ignore log files
 log/
+log/*
 
 # Ignore Visual Studio Code settings
 .vscode/

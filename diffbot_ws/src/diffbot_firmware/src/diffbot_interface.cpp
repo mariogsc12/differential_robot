@@ -111,11 +111,12 @@ namespace diffbot_firmware{
         if(microcontroller_.IsDataAvailable()){
             auto dt = (rclcpp::Clock().now() - last_run_).seconds();
             std::string message;
+            microcontroller_.ReadLine(message);
+            std::stringstream ss(message);
             std::string res;
             int multiplier = 1;
 
-            microcontroller_.ReadLine(message);
-            std::stringstream ss(message);
+            RCLCPP_INFO(rclcpp::get_logger("DiffbotInterface"), "Received message: '%s'", message.c_str());
 
             while(std::getline(ss, res, ',')){
                 multiplier = res.at(1) == 'p' ? 1 : -1;
@@ -128,6 +129,10 @@ namespace diffbot_firmware{
                     position_states_.at(1) += velocity_states_.at(1)*dt;
                 }
             }
+
+            //RCLCPP_INFO(rclcpp::get_logger("DiffbotInterface"), "Position states: %f, %f", position_states_[0], position_states_[1]);
+            //RCLCPP_INFO(rclcpp::get_logger("DiffbotInterface"), "Velocity states: %f, %f", velocity_states_[0], velocity_states_[1]);
+
 
             last_run_ = rclcpp::Clock().now();
         }
