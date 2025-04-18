@@ -111,11 +111,12 @@ namespace diffbot_firmware{
         if(microcontroller_.IsDataAvailable()){
             auto dt = (rclcpp::Clock().now() - last_run_).seconds();
             std::string message;
+            microcontroller_.ReadLine(message);
+            std::stringstream ss(message);
             std::string res;
             int multiplier = 1;
 
-            microcontroller_.ReadLine(message);
-            std::stringstream ss(message);
+            // RCLCPP_INFO(rclcpp::get_logger("DiffbotInterface"), "Received message: '%s'", message.c_str());
 
             while(std::getline(ss, res, ',')){
                 multiplier = res.at(1) == 'p' ? 1 : -1;
