@@ -23,6 +23,7 @@ def generate_launch_description():
         launch_arguments={
             "use_simple_controller": "False",
             "use_python": "False",
+            "use_sim_time": "True",
         }.items()
     )
 
@@ -44,7 +45,15 @@ def generate_launch_description():
         executable="rviz2",
         name="rviz2",
         output="screen",
-        arguments=["-d", os.path.join(get_package_share_directory("diffbot_bringup"),"rviz","simulated_robot.rviz")]
+        arguments=["-d", os.path.join(get_package_share_directory("diffbot_description"),"rviz","simulated_robot.rviz")]
+    )
+
+    local_localization = IncludeLaunchDescription(
+        os.path.join(
+            get_package_share_directory("diffbot_localization"),
+            "launch",
+            "local_localization.launch.py"
+        ),
     )
 
     return LaunchDescription([
@@ -52,5 +61,6 @@ def generate_launch_description():
         controller,
         joystick,
         trajectory,
-        rviz
+        rviz,
+        local_localization
     ])

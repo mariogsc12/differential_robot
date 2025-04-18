@@ -1,0 +1,79 @@
+main:
+  test_name: "PRUEBA_PESO_MOVIMIENTO_1KG"                                      # Used to build the full input/output path: input_path/test_name/
+  data: ["time","input","velocity"]   # Must match the column names in the CSV file exactly
+  data_labels: [ "time", "input", "velocity"]     # Labels for the plot. Must have the same number of entries as 'data'
+  output_format: "eps"                                        # Output image format (e.g., png, pdf, eps)
+  test_time: [0,30]                                           # Time range to include in the plot [start_time, end_time]. Data outside this range will be ignored
+  input_path: C:\Users\alvar\Documents\Repositorios\Tests_Self_Balancing_Robot\prueba_carga\Movimiento                                     # Base input path. The full path will be: input_path / test_name / Data / data.csv
+  output_path: .                                   # Base output path. The full path will be: output_path / test_name / Plots / <plot_name>.<output_format>
+                                 # Base output path. The full path will be: output_path / test_name / Plots / <plot_name>.<output_format>
+
+serial:
+  port: "COM3"
+  baudrate: 115200
+  min_samples_to_store_data: 20
+
+wifi:
+  ip: "192.168.1.40"
+  connection_retries: 5
+  timeout: 5
+
+plot: 
+  x_label: "Tiempo [s]"
+  y_label_single: "Pitch [deg]"
+  y_label_multiple: ["input [PWM]", "Pitch [deg]", "Velocidad [m/s]", "Velocidad angular [deg/s]", "Perturbacion [ppm]", "Accion de control [ppm]"] 
+  y_ticks: [-20, -10, 0, 10, 20] 
+  y_ticks_multiple: 
+    - [-0.5, -0.25, 0, 0.25, 0.5] 
+    - [-20, -10, 0, 10, 20] 
+    - [-0.5, -0.25, 0, 0.25, 0.5] 
+    - [ -150, -100, -50, 0, 50, 100, 150]
+    - [-50, -25, 0, 25, 50]
+    - [-75, -50, -25, 0, 25, 50, 75]
+         # Empty if not needed
+  y_limits: [-25, 25]
+  y_limits_multiple:   
+    - [-0.5, 0.5]
+    - [-25, 25] 
+    - [-0.6, 0.6]
+    - [-200, 200] 
+    - [-60, 60] 
+    - [-80, 80] 
+  title:                  # Empty if not needed
+  text_size: 10
+  line_width: 1.5
+  
+  legend_location: "best"   # best - upper right 
+  legend_font_size: 8
+
+  text_font: "Cambria"
+
+  mode_horizontal: True
+
+  horizontal:
+    width: 7.5       # inches
+    height: 2      # inches
+  default:
+    width: 3.75      # inches
+    height: 2        # inches
+
+  colors: [
+      '#1F77B4',  # blue
+      '#FF7F0E',  # orange
+      '#2CA02C',  # green
+      '#9467BD',  # purple
+      '#8C564B',  # brown
+      '#E377C2',  # pink
+      '#7F7F7F',  # gray
+      '#BCBD22',  # yellow-green
+      '#17BECF',  # cyan
+      '#AEC7E8',  # light blue
+      '#FFBB78',  # light orange
+      '#98DF8A',  # light green
+      '#C5B0D5',  # light purple
+      '#C49C94',  # light brown
+      '#F7B6D2',  # light pink
+      '#C7C7C7',  # light gray
+      '#DBDB8D',  # light yellow-green
+      '#9EDAE5'   # light cyan
+    ]

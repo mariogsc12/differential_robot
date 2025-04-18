@@ -3,15 +3,14 @@
 
 #include <Arduino.h>
 #include <PID_v1.h>
-#include <string>
 using namespace std;
 
 
 // Encoders
 unsigned int right_encoder_counter = 0;
 unsigned int left_encoder_counter = 0;
-string right_wheel_sign = "p";  // 'p' = positive, 'n' = negative
-string left_wheel_sign = "p";  // 'p' = positive, 'n' = negative
+String right_wheel_sign = "p";  // 'p' = positive, 'n' = negative
+String left_wheel_sign = "p";  // 'p' = positive, 'n' = negative
 unsigned long last_millis = 0;
 const unsigned long interval = 100;
 
@@ -36,35 +35,27 @@ double left_wheel_meas_vel = 0.0;     // rad/s
 double right_wheel_cmd = 0.0;             // 0-255
 double left_wheel_cmd = 0.0;              // 0-255
 // Tuning
-double Kp_r = 11.5;
-double Ki_r = 7.5;
+double Kp_r = 10.8;
+double Ki_r = 22.5;
 double Kd_r = 0.1;
-double Kp_l = 12.8;
-double Ki_l = 8.3;
+double Kp_l = 10.8;
+double Ki_l = 22.5;
 double Kd_l = 0.1;
 
 // Controller
 PID rightMotor(&right_wheel_meas_vel, &right_wheel_cmd, &right_wheel_cmd_vel, Kp_r, Ki_r, Kd_r, DIRECT);
 PID leftMotor(&left_wheel_meas_vel, &left_wheel_cmd, &left_wheel_cmd_vel, Kp_l, Ki_l, Kd_l, DIRECT);
 
-void SerialPlotter(){
-  //Serial.print(">serial_char_msg:"); Serial.println(chr);
-  //Serial.print(">left_wheel_cmd:"); Serial.println(left_wheel_cmd);
-  //Serial.print(">right_wheel_cmd:"); Serial.println(right_wheel_cmd);
-  Serial.print(">encoder_left:"); Serial.println(left_wheel_meas_vel);
-  Serial.print(">encoder_right:"); Serial.println(right_wheel_meas_vel);
-}
-
 // New pulse from Right Wheel Encoder
 void rightEncoderCallback()
 {
   if(digitalRead(right_encoder_phaseB) == HIGH)
   {
-    right_wheel_sign = "p";
+    right_wheel_sign = "n";
   }
   else
   {
-    right_wheel_sign = "n";
+    right_wheel_sign = "p";
   }
   right_encoder_counter++;
 }
@@ -74,11 +65,11 @@ void leftEncoderCallback()
 {
   if(digitalRead(left_encoder_phaseB) == HIGH)
   {
-    left_wheel_sign = "n";
+    left_wheel_sign = "p";
   }
   else
   {
-    left_wheel_sign = "p";
+    left_wheel_sign = "n";
   }
   left_encoder_counter++;
 }
@@ -207,7 +198,7 @@ void loop() {
   unsigned long current_millis = millis();
   if(current_millis - last_millis >= interval)
   {
-    right_wheel_meas_vel = (10 * right_encoder_counter * (60.0/385.0)) * 0.10472;
+    right_wheel_meas_vel = (10 * right_encoder_counter * (60.0/385.0)) * 0.10472;   // [rad/seg]
     left_wheel_meas_vel = (10 * left_encoder_counter * (60.0/385.0)) * 0.10472;
     
     rightMotor.Compute();
@@ -223,15 +214,15 @@ void loop() {
       left_wheel_cmd = 0.0;
     }
 
-    string encoder_read = "r" + string(right_wheel_sign) + to_string(right_wheel_meas_vel) +
-                        ",l" + string(left_wheel_sign) + to_string(left_wheel_meas_vel) + ",";
-
+    String encoder_read = "r" + String(right_wheel_sign) + String(right_wheel_meas_vel) +
+                        ",l" + String(left_wheel_sign) + String(left_wheel_meas_vel) + ",";
+    
+    //Serial.println(encoder_read);
     last_millis = current_millis;
     right_encoder_counter = 0;
     left_encoder_counter = 0;
-
+    
     analogWrite(L298N_enA, abs(right_wheel_cmd));
     analogWrite(L298N_enB, abs(saturate(left_wheel_cmd,-255,255)));
   }
-  SerialPlotter();
 }

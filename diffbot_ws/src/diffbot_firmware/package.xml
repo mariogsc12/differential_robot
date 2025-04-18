@@ -3,23 +3,22 @@
 <package format="3">
   <name>diffbot_firmware</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="m.gomez03016@gmail.com">mario</maintainer>
+  <description>The diffbot_firmware package</description>
+    <maintainer email="m.gomez03016@gmail.com">mario</maintainer>
   <license>TODO: License declaration</license>
+  <author email="m.gomez03016@gmail.com">Mario Gomez</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
   <depend>rclcpp</depend>
-  <depend>rclpy</depend>
   <depend>std_msgs</depend>
   <depend>hardware_interface</depend>
   <depend>rclcpp_lifecycle</depend>
   <depend>pluginlib</depend>
   <depend>libserial-dev</depend>
 
-
-  <exec_depend>ros2launch</exec_depend>
   <exec_depend>python3-serial</exec_depend>
+  <exec_depend>python3-smbus</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

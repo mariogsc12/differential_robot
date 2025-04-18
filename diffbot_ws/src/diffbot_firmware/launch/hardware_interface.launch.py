@@ -1,29 +1,32 @@
 import os
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.substitutions import Command
+from ament_index_python.packages import get_package_share_directory
+
 
 def generate_launch_description():
-    diffbot_description_dir = get_package_share_directory("diffbot_description")
 
     robot_description = ParameterValue(
-        Command([
-            "xacro ", 
-            os.path.join(get_package_share_directory("diffbot_description"),
-                        "urdf", 
-                        "diffbot.urdf.xacro"
-            ),
-            " is_sim:=False",
-        ]),
-        value_type=str
+        Command(
+            [
+                "xacro ",
+                os.path.join(
+                    get_package_share_directory("diffbot_description"),
+                    "urdf",
+                    "diffbot.urdf.xacro",
+                ),
+                " is_sim:=False"
+            ]
+        ),
+        value_type=str,
     )
-    
-    robot_state_publisher = Node(
+
+    robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
-        parameters=[{"robot_description": robot_description}]
+        parameters=[{"robot_description": robot_description}],
     )
 
     controller_manager = Node(
@@ -35,12 +38,14 @@ def generate_launch_description():
             os.path.join(
                 get_package_share_directory("diffbot_controller"),
                 "config",
-                "diffbot_controllers.yaml"
-            )
-        ]
+                "diffbot_controllers.yaml",
+            ),
+        ],
     )
 
-    return LaunchDescription([
-        robot_state_publisher,
-        controller_manager
-    ])
+    return LaunchDescription(
+        [
+            robot_state_publisher_node,
+            controller_manager,
+        ]
+    )

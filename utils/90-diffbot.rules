@@ -1,0 +1,4 @@
+# ESP32 symbolic link
+KERNEL=="ttyACM[0-9]*", SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d3", MODE:="0777", SYMLINK+="ttyESP32"
+SUBSYSTEMS=="tty", GROUP="plugdev", MODE="0660" 
+
