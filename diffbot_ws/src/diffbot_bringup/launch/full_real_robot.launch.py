@@ -26,7 +26,19 @@ def generate_launch_description():
         }.items(),
     )
 
+    joystick = IncludeLaunchDescription(
+        os.path.join(
+            get_package_share_directory("diffbot_controller"),
+            "launch",
+            "joystick_teleop.launch.py"
+        ),
+        launch_arguments={
+            "use_sim_time": "False"
+        }.items()
+    )
+
     return LaunchDescription([
         hardware_interface,
-        controller
+        controller,
+        joystick
     ])
