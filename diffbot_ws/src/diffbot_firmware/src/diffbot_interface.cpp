@@ -116,7 +116,7 @@ namespace diffbot_firmware{
             std::string res;
             int multiplier = 1;
 
-            RCLCPP_INFO(rclcpp::get_logger("DiffbotInterface"), "Received message: '%s'", message.c_str());
+            //RCLCPP_INFO(rclcpp::get_logger("DiffbotInterface"), "Received message: '%s'", message.c_str());
 
             while(std::getline(ss, res, ',')){
                 multiplier = res.at(1) == 'p' ? 1 : -1;
