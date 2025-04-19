@@ -130,10 +130,6 @@ namespace diffbot_firmware{
                 }
             }
 
-            //RCLCPP_INFO(rclcpp::get_logger("DiffbotInterface"), "Position states: %f, %f", position_states_[0], position_states_[1]);
-            //RCLCPP_INFO(rclcpp::get_logger("DiffbotInterface"), "Velocity states: %f, %f", velocity_states_[0], velocity_states_[1]);
-
-
             last_run_ = rclcpp::Clock().now();
         }
 

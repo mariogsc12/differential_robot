@@ -4,16 +4,16 @@ import rclpy
 from rclpy.node import Node
 from rclpy.time import Time
 from rclpy.constants import S_TO_NS
-from std_msgs.msg import Float64MultiArray
+from geometry_msgs.msg import TransformStamped
 from sensor_msgs.msg import JointState
-from geometry_msgs.msg import TwistStamped, TransformStamped
 from nav_msgs.msg import Odometry
 import numpy as np
 import math
 from tf_transformations import quaternion_from_euler
 from tf2_ros import TransformBroadcaster
 
-class SimpleController(Node):
+
+class NoisyController(Node):
     def __init__(self):
         super().__init__("simple_controller")
 
@@ -34,17 +34,12 @@ class SimpleController(Node):
         self.y_ = 0.0
         self.theta_ = 0.0
 
-        self.wheel_cmd_pub_ = self.create_publisher(Float64MultiArray, "simple_velocity_controller/commands", 10)
-        self.odom_pub_ = self.create_publisher(Odometry, "diffbot_controller/odom", 10)
-        self.vel_sub_ = self.create_subscription(TwistStamped, "diffbot_controller/cmd_vel", self.velCallback,10)
+        self.odom_pub_ = self.create_publisher(Odometry, "diffbot_controller/odom_noisy", 10)
         self.joint_sub_ = self.create_subscription(JointState, "joint_states", self.jointCallback,10)
 
-        self.speed_conversion_ = np.array([[self.wheel_radius/2, self.wheel_radius/2],
-                                          [self.wheel_radius/self.wheel_separation, -self.wheel_radius/self.wheel_separation]])
-        
         self.odom_msg_ = Odometry()
         self.odom_msg_.header.frame_id = "odom"
-        self.odom_msg_.child_frame_id = "base_link"
+        self.odom_msg_.child_frame_id = "base_link_ekf"
         self.odom_msg_.pose.pose.orientation.x = 0.0
         self.odom_msg_.pose.pose.orientation.y = 0.0
         self.odom_msg_.pose.pose.orientation.z = 0.0
@@ -53,23 +48,15 @@ class SimpleController(Node):
         self.br_ = TransformBroadcaster(self)
         self.transform_stamped_ = TransformStamped()
         self.transform_stamped_.header.frame_id = "odom"
-        self.transform_stamped_.child_frame_id = "base_link"
-
-        self.get_logger().info("The conversion matrix is %s" %self.speed_conversion_)
-
-    def velCallback(self, msg):
-        robot_speed = np.array([[msg.twist.linear.x],
-                                [msg.twist.angular.z]])
-        
-        wheel_speed = np.matmul(np.linalg.inv(self.speed_conversion_),robot_speed)
-        wheel_speed_msg = Float64MultiArray()
-        wheel_speed_msg.data = [wheel_speed[1, 0], wheel_speed[0, 0]]
-        self.wheel_cmd_pub_.publish(wheel_speed_msg)
+        self.transform_stamped_.child_frame_id = "base_link_noisy"
 
 
     def jointCallback(self, msg):
-        dp_left = msg.position[1] - self.left_wheel_prev_pos_
-        dp_right = msg.position[0] - self.right_wheel_prev_pos_
+        wheel_encoder_left = msg.position[1] + np.random.normal(0,0.005)
+        wheel_encoder_right = msg.position[0] + np.random.normal(0,0.005)
+        
+        dp_left = wheel_encoder_left - self.left_wheel_prev_pos_
+        dp_right = wheel_encoder_right - self.right_wheel_prev_pos_
         dt = Time.from_msg(msg.header.stamp) - self.perv_time_
 
         self.left_wheel_prev_pos_ = msg.position[1]
@@ -106,9 +93,9 @@ class SimpleController(Node):
 
 def main():
     rclpy.init()
-    simple_controller = SimpleController()
-    rclpy.spin(simple_controller)
-    simple_controller.destroy_node()
+    noisy_controller = NoisyController()
+    rclpy.spin(noisy_controller)
+    noisy_controller.destroy_node()
     rclpy.shutdown()
     
 
