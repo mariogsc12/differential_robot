@@ -35,3 +35,12 @@ Components:
 - 11.1V LiPo Battery -> https://amzn.eu/d/0fujazv
 - RPLIDAR A1M8 -> https://amzn.eu/d/6fyjb1o
 - ESP32-S3-DevKitC-1 -> https://amzn.eu/d/iINVQQF
+
+## Considerations
+
+Below are some important notes to keep in mind during the development of this project. These are essential to ensure the correct behavior of the robot:
+
+- Make sure to use the same ROS_DOMAIN_ID on both the Raspberry Pi and the local machine. This can be configured in the .bashrc file.
+- In this project, the serial port used is ttyACM0. Modify it if necessary.
+- The pinout of your system can be easily changed in the config.h file located at diffbot_ws/src/diffbot_firmware/firmware/robot_control/src/config.h.
+- To work with Wi-Fi communication, ensure both devices are on the same network and that multicast traffic is not blocked.
