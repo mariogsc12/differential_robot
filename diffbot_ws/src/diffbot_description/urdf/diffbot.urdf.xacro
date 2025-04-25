@@ -153,4 +153,33 @@
         </xacro:inertial_sphere>
     </link>
 
+    <!-- IMU -->
+    <link name="imu_link">
+        <inertial>
+            <origin xyz="-0.0055 0.00016821 0.000514" rpy="0 0 0"/>
+                <mass value="0.000528415"/>
+                <inertia ixx="1.4617E-08" ixy="1.4E-10" ixz="-1.9963E-12"
+                        iyy="1.4617E-08" iyz="7.5237E-12"
+                        izz="2.3027E-08"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://diffbot_description/meshes/imu_link.STL"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://diffbot_description/meshes/imu_link.STL"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="imu_joint" type="fixed">
+        <origin xyz="0.075 0 0.07" rpy="0 0 0" />
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+        <axis xyz="0 0 0"/>
+    </joint>
 </robot>
