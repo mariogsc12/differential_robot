@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import time
 import rclpy
 import rclpy.executors
@@ -35,7 +37,7 @@ class SimpleLifecycleNode(Node):
     def msgCallback(self, msg):
         current_state = self._state_machine.current_state
         if current_state[1] == "activate":
-            self.get_logger().info("I heard: " %msg.data)
+            self.get_logger().info("I heard: %s " %msg.data)
 
 def main():
     rclpy.init()
@@ -44,7 +46,7 @@ def main():
     executor.add_node(simple_lifecycle_node)
     try:
         executor.spin()
-    except (KeyboardInterrupt,rclpy.executors.ExternalShutdownException)
+    except (KeyboardInterrupt,rclpy.executors.ExternalShutdownException):
         simple_lifecycle_node.destroy_node()
         
 if __name__ == "__main__":

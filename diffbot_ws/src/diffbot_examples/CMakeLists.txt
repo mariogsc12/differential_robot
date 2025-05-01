@@ -15,14 +15,6 @@ find_package(std_msgs REQUIRED)
 
 ament_python_install_package(${PROJECT_NAME})
 
-# Default
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  set(ament_cmake_copyright_FOUND TRUE)
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
-
 # C++
 add_executable(simple_lifecycle_node src/simple_lifecycle_node.cpp)
 ament_target_dependencies(simple_lifecycle_node rclcpp rclcpp_lifecycle std_msgs)
@@ -35,6 +27,7 @@ install(TARGETS
 # Python
 install(PROGRAMS 
   ${PROJECT_NAME}/simple_lifecycle_node.py
+  ${PROJECT_NAME}/simple_publisher.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
