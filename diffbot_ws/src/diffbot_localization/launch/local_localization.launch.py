@@ -42,6 +42,7 @@ def generate_launch_description():
     imu_republisher_cpp = Node(
         package="diffbot_localization",
         executable="imu_republisher",
+        parameters=[{"imu_topic":"imu/out"}],
         condition=UnlessCondition(use_python)
     )
 
