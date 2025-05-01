@@ -34,14 +34,6 @@ def generate_launch_description():
         )
     )
 
-    robot_localization = IncludeLaunchDescription(
-        os.path.join(
-            get_package_share_directory("diffbot_localization"),
-            "launch",
-            "local_localization.launch.py"
-        )
-    )
-
     trajectory = Node(
         package="diffbot_utils",
         executable="trajectory_drawer"
