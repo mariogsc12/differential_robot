@@ -1,12 +1,16 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, Node
 from launch.substitutions import LaunchConfiguration
 from launch.conditions import IfCondition, UnlessCondition
 
 def generate_launch_description():
 
+    use_joystick_arg = DeclareLaunchArgument(
+        "use_joystick",
+        default_value="False"
+    )
     use_joystick = LaunchConfiguration("use_joystick")
 
     hardware_interface = IncludeLaunchDescription(
@@ -41,6 +45,19 @@ def generate_launch_description():
         }.items()
     )
 
+    trajectory = Node(
+        package="diffbot_utils",
+        executable="trajectory_drawer"
+    )
+    
+    witmotion_imu = IncludeLaunchDescription(
+        os.path.join(
+            get_package_share_directory("witmotion_ros"),
+            "launch",
+            "wt61c.launch.py"
+        ),
+    )
+
     local_localization = IncludeLaunchDescription(
         os.path.join(
             get_package_share_directory("diffbot_localization"),
@@ -52,9 +69,13 @@ def generate_launch_description():
         }.items()
     )
 
+
     return LaunchDescription([
+        use_joystick_arg,
         hardware_interface,
         controller,
+        trajectory,
         joystick,
+        witmotion_imu,
         local_localization
     ])

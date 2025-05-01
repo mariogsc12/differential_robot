@@ -16,7 +16,7 @@ class SimpleSerialTransmitter : public rclcpp::Node{
 
     public:
         SimpleSerialTransmitter():Node("simple_serial_transmitter"){
-            declare_parameter("port","/dev/ttyACM0");
+            declare_parameter("port","/dev/ttyESP32");
             port_ = get_parameter("port").as_string();
 
             microcontroller_.Open(port_);
