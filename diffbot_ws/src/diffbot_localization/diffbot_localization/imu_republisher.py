@@ -18,8 +18,11 @@ def main():
     node = Node("imu_republisher_node")
     time.sleep(1)
 
+    node.declare_parameter("imu_topic", "imu/out")  # default = imu/out (simulation)
+    imu_topic = node.get_parameter("imu_topic").get_parameter_value().string_value
+
     imu_pub_ = node.create_publisher(Imu, "imu_ekf", 10)
-    imu_sub_ = node.create_subscription(Imu, "imu/out", imuCallback, 10)
+    imu_sub_ = node.create_subscription(Imu, imu_topic, imuCallback, 10)
 
     rclpy.spin(node)
     rclpy.shutdown()

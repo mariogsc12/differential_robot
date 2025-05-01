@@ -20,7 +20,7 @@ def generate_launch_description():
     static_transform_publisher = Node(
         package="tf2_ros",
         executable="static_transform_publisher",
-        arguments=["--x", "0.125", "--y", "0.065", "--z", "0.105", "--qx", "0","--qy", "0","--qz", "0","--qw", "1", 
+        arguments=["--x", "0.145", "--y", "0.0845", "--z", "0.1", "--qx", "0","--qy", "0","--qz", "0","--qw", "1", 
                    "--frame-id", "base_link_ekf", "--child-frame-id", "imu_link_ekf"]
     )
 
@@ -35,6 +35,7 @@ def generate_launch_description():
     imu_republisher_py = Node(
         package="diffbot_localization",
         executable="imu_republisher_py",
+        parameters=[{"imu_topic":"imu/out"}],
         condition=IfCondition(use_python)
     )
 

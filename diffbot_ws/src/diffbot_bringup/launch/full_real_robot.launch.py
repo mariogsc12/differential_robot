@@ -37,8 +37,20 @@ def generate_launch_description():
         }.items()
     )
 
+    local_localization = IncludeLaunchDescription(
+        os.path.join(
+            get_package_share_directory("diffbot_localization"),
+            "launch",
+            "local_localization.launch.py"
+        ),
+        launch_arguments={
+            "imu_topic": "imu_data"
+        }.items()
+    )
+
     return LaunchDescription([
         hardware_interface,
         controller,
-        joystick
+        joystick,
+        local_localization
     ])

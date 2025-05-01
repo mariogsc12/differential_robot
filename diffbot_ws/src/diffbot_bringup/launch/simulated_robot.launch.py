@@ -55,10 +55,22 @@ def generate_launch_description():
         arguments=["-d", os.path.join(get_package_share_directory("diffbot_bringup"),"rviz","simulated_robot.rviz")]
     )
 
+    local_localization = IncludeLaunchDescription(
+        os.path.join(
+            get_package_share_directory("diffbot_localization"),
+            "launch",
+            "local_localization.launch.py"
+        ),
+        launch_arguments={
+            "imu_topic": "imu/out"
+        }.items()
+    )
+
     return LaunchDescription([
         gazebo,
         controller,
         joystick,
         trajectory,
-        rviz
+        rviz,
+        local_localization
     ])
