@@ -71,6 +71,7 @@ def generate_launch_description():
     return LaunchDescription([
         use_python_arg,
         is_real_arg,
+        imu_topic_arg,
         static_transform_publisher,
         robot_localization_sim,
         robot_localization_real,
