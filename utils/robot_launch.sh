@@ -12,7 +12,6 @@ ros2 launch diffbot_bringup real_robot.launch.py use_joystick:=false'"
 local_cmd_1="source /opt/ros/humble/setup.bash; \
 export ROS_DOMAIN_ID=2; \
 cd /home/mario/REPOS/differential_robot/diffbot_ws; \
-bash ../utils/kill_ros2.sh; \
 source install/setup.bash; \
 sleep 5; \
 ros2 launch diffbot_controller joystick_teleop.launch.py"

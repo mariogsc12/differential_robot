@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# ros2 process to kill
+SCRIPT_PID=$$
+
 processes=(
-  "ros2"
-  "from ros2cli.daemon.daemonize import main"
+  "ros2cli.daemon.daemonize"
   "rviz2"
   "gzserver"
   "gzclient"
@@ -17,11 +17,15 @@ processes=(
   "witmotion_ros"
   "diffbot_controller"
   "diffbot_bringup"
+  "noisy_controller"
+  "trajectory_drawer"
+  "imu_republisher"
+  "diffbot_utils"
+  "diffbot_localization"
+  "ros2"
 )
 
-
 for process in "${processes[@]}"; do
-	pkill -9 -f $process
+  echo "Killing: $process"
+  pkill -9 -f "$process"
 done
-
-
