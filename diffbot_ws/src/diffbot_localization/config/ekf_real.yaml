@@ -23,7 +23,7 @@ ekf_filter_node:
                        false, false, true,     # roll,pitch,yaw
                        false, false, false,    # linear velocities 
                        false, false, true,     # angular velocities
-                       true, false, false]     # linear acceleration
+                       false, false, false]     # linear acceleration
         imu0_differential: true
 
         # Covariance
