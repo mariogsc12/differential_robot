@@ -20,14 +20,8 @@ def generate_launch_description():
         default_value="False"
     )
 
-    imu_topic_arg = DeclareLaunchArgument(
-        "imu_topic",
-        default_value="imu/out"
-    )
-
     use_python = LaunchConfiguration("use_python")
     is_real = LaunchConfiguration("is_real")
-    imu_topic = LaunchConfiguration("imu_topic")
 
     static_transform_publisher = Node(
         package="tf2_ros",
@@ -57,21 +51,18 @@ def generate_launch_description():
     imu_republisher_py = Node(
         package="diffbot_localization",
         executable="imu_republisher_py",
-        parameters=[{"imu_topic": imu_topic}],
         condition=IfCondition(use_python)
     )
 
     imu_republisher_cpp = Node(
         package="diffbot_localization",
         executable="imu_republisher",
-        parameters=[{"imu_topic": imu_topic}],
         condition=UnlessCondition(use_python)
     )
 
     return LaunchDescription([
         use_python_arg,
         is_real_arg,
-        imu_topic_arg,
         static_transform_publisher,
         robot_localization_sim,
         robot_localization_real,

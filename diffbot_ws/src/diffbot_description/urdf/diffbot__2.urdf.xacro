@@ -1,0 +1,284 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diffbot">
+
+
+    <!-- #################################################################### -->
+    <!--                           COLOR DEFINITIONS                          -->
+    <!-- #################################################################### -->
+    <material name="white">
+        <color rgba="1 1 1 1" />
+    </material>
+
+    <material name="orange">
+        <color rgba="1 0.3 0.1 1"/>
+    </material>
+
+    <material name="blue">
+        <color rgba="0 0 1 1"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0 0 0 1"/>
+    </material>
+
+    <material name="brown">
+        <color rgba="0.7 0.55 0.3 1"/>
+    </material>
+
+    <!-- #################################################################### -->
+    <!--                          ARGUMENT DEFINITIONS                        -->
+    <!-- #################################################################### -->
+
+    <!-- ROS2 VERSION -->
+    <xacro:arg name="is_ignition" default="true"/>
+
+    <!-- START SIMULATION OR REAL ROBOT -->
+    <xacro:arg name="is_sim" default="true"/>
+
+    <!-- #################################################################### -->
+    <!--                        XACRO FILE DEPENDENCIES                       -->
+    <!-- #################################################################### -->
+
+    <!-- INCLUDE INERTIAL MACROS -->
+    <xacro:include filename="$(find diffbot_description)/urdf/inertial_macros.xacro"/>
+
+    <!-- GAZEBO -->
+    <xacro:include filename="$(find diffbot_description)/urdf/diffbot_gazebo.xacro"/>
+
+    <!-- ROS2 CONTROL -->
+    <xacro:include filename="$(find diffbot_description)/urdf/diffbot_ros2_control.xacro"/> 
+
+
+    <!-- #################################################################### -->
+    <!--                        GEOMETRY AND CONSTANTS                        -->
+    <!-- #################################################################### -->
+
+    <!-- Pi constant -->
+    <xacro:property name="pi_const" value="3.14159265"/>
+
+    <!-- Body dimensions -->
+    <xacro:property name="a" value="0.3"/>
+    <xacro:property name="b" value="0.08"/>
+    <xacro:property name="c" value="0.22"/>
+    <xacro:property name="w" value="0.005"/>
+
+    <!-- Wheels dimensions -->
+    <xacro:property name="r" value="0.033"/>
+    <xacro:property name="d" value="0.03"/>
+    <xacro:property name="offset_1" value="0.0125"/>
+    <xacro:property name="offset_2" value="0.0075"/>
+
+    <xacro:property name="s1" value="${b/2+r}"/>
+    <xacro:property name="s2" value="${2*r}"/>
+    <xacro:property name="s3" value="${2*r}"/>
+    <xacro:property name="s4" value="${c/2+d/2+offset_2}"/>
+
+    <!-- Wheels dimensions -->
+    <xacro:property name="imu_side" value="0.035"/>
+    <xacro:property name="imu_width" value="0.018"/>
+    <xacro:property name="imu_x_off" value="0.005"/>
+    <xacro:property name="imu_y_off" value="0.025"/>
+
+    <!-- #################################################################### -->
+    <!--                            MASS AND INERTIA                          -->
+    <!-- #################################################################### -->
+
+    <!-- Body material density -->
+    <xacro:property name="d1" value="600"/>
+    <!-- Wheel material density -->
+    <xacro:property name="d2" value="2710.0"/>
+    <!-- Caster wheel material density -->
+    <xacro:property name="d3" value="2710.0"/>
+
+    <!-- Body mass -->
+    <xacro:property name="m_base" value="${d1*a*c*w}"/>
+    <xacro:property name="m_wall_1" value="${d1*b*c*w}"/>
+    <xacro:property name="m_wall_2" value="${d1*a*b*w}"/>
+    <xacro:property name="m1" value="${2*m_base + 2*m_wall_1 + 2*m_wall_2}"/>
+    <!-- Wheel mass -->
+    <xacro:property name="m2" value="0.1"/>
+    <!-- Caster wheel mass -->
+    <xacro:property name="m3" value="0.2"/>
+
+    <!-- Body moments of inertia -->
+    <xacro:property name="Ix_body" value="${(1.0/12.0)*m1*(b*b+c*c)}"/>
+    <xacro:property name="Iy_body" value="${(1.0/12.0)*m1*(a*a+b*b)}"/>
+    <xacro:property name="Iz_body" value="${(1.0/12.0)*m1*(a*a+c*c)}"/>
+    <!-- Wheel moments of inertia -->
+    <xacro:property name="Iz_wheel" value="${0.5*m2*r*r}"/>
+    <xacro:property name="I_wheel" value="${(1.0/12.0)*m2*(3.0*r*r+d*d)}"/>
+    <!-- Caster wheel moments of inertia -->
+    <xacro:property name="I_caster" value="${(2.0/5.0)*m3*r*r}"/>
+
+    <!-- Body inertial macro -->
+    <xacro:macro name="inertia_body">
+        <inertial>
+            <origin xyz="0 0 ${s1}" rpy="0 0 0"/>
+            <mass value="${m1}"/>
+            <inertia ixx="${Ix_body}" ixy="0.0" ixz="0.0" iyy="${Iy_body}" iyz="0.0" izz="${Iz_body}" />
+        </inertial>
+    </xacro:macro>
+    <!-- Wheel inertial macro -->
+    <xacro:macro name="inertia_wheel">
+        <inertial>
+            <origin xyz="0 0 0" rpy="1.570795 0 0"/>
+            <mass value="${m2}"/>
+            <inertia ixx="${I_wheel}" ixy="0.0" ixz="0.0" iyy="${I_wheel}" iyz="0.0" izz="${Iz_wheel}" />
+        </inertial>
+    </xacro:macro>
+    <!-- Caster wheel inertial macro -->
+    <xacro:macro name="inertia_caster">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${m3}"/>
+            <inertia ixx="${I_caster}" ixy="0.0" ixz="0.0" iyy="${I_caster}" iyz="0.0" izz="${I_caster}" />
+        </inertial>
+    </xacro:macro>
+
+
+
+    <!-- #################################################################### -->
+    <!--                           DIFFBOT URDF MODEL                         -->
+    <!-- #################################################################### -->
+
+    
+    <!-- BASE FOOTPRINT -->
+    <link name="base_link"/>
+
+    <!-- BODY -->
+    <joint name="body_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="body_link"/>
+    </joint>
+    
+    <link name="body_link">
+        <visual>
+            <origin xyz="0 0 ${s1}" rpy="0 0 0"/>
+            <geometry>
+                <box size="${a} ${c} ${b}"/>
+            </geometry>
+            <material name="brown"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="${a} ${c} ${b}"/>
+            </geometry>
+        </collision>
+
+        <xacro:inertia_body />
+    </link>
+
+    <!-- LEFT WHEEL -->
+    <joint name="left_wheel_joint" type="continuous">
+        <parent link="body_link"/> 
+        <child link="left_wheel"/>
+        <origin xyz="${-s2} ${-s4} ${r}" rpy="0 0 0" />
+        <axis xyz="0 1 0"/>
+        <limit effort="50000" velocity="10"/>
+        <dynamics damping="1.0" friction="1.0"/>
+    </joint>
+
+    <link name="left_wheel">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.570795 0 0" />
+            <geometry>
+                <cylinder radius="${r}" length="${d}"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <cylinder radius="${r}" length="${d}"/>
+            </geometry>
+        </collision>
+
+        <xacro:inertia_wheel/>
+    </link>
+
+    <!-- RIGHT WHEEL -->
+    <joint name="right_wheel_joint" type="continuous">
+        <parent link="body_link"/> 
+        <child link="right_wheel"/>
+        <origin xyz="${-s2} ${s4} ${r}" rpy="0 0 0" />
+        <axis xyz="0 1 0"/>
+        <limit effort="50000" velocity="10"/>
+        <dynamics damping="1.0" friction="1.0"/>
+    </joint>
+
+    <link name="right_wheel">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.570795 0 0" />
+            <geometry>
+                <cylinder radius="${r}" length="${d}"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <cylinder radius="${r}" length="${d}"/>
+            </geometry>
+        </collision>
+
+        <xacro:inertia_wheel/>
+    </link>
+
+    <!-- CASTER WHEEL -->
+    <joint name="caster_wheel_joint" type="fixed">
+        <parent link="body_link"/>
+        <child link="caster_wheel"/>
+        <origin xyz="${s2} 0 ${r}"/>
+    </joint>
+
+
+    <link name="caster_wheel">
+        <visual>
+            <geometry>
+                <sphere radius="${r}"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <sphere radius="${r}"/>
+            </geometry>
+        </collision>
+
+        <xacro:inertia_caster/>
+    </link>
+
+    <!-- IMU -->
+    <link name="imu_link">
+        <inertial>
+            <origin xyz="0.0175 0.0175 0" rpy="0 0 0"/>
+            <mass value="0.000528415"/>
+            <inertia ixx="1.4617E-08" ixy="1.4E-10" ixz="-1.9963E-12"
+                    iyy="1.4617E-08" iyz="7.5237E-12"
+                    izz="2.3027E-08"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0175 0.0175 0" rpy="${pi/2} 0 ${pi}"/>
+            <geometry>
+                <mesh filename="package://diffbot_description/meshes/WT901C.stl"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin xyz="0.0175 0.0175 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://diffbot_description/meshes/WT901C.stl"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="imu_joint" type="fixed">
+        <origin xyz="${a/2 - imu_x_off - imu_side/2} ${c/2 - imu_y_off - imu_side/2} ${b/2+s1}" rpy="0 0 0" />
+        <parent link="body_link"/>
+        <child link="imu_link"/>
+        <axis xyz="0 0 0"/>
+    </joint>
+</robot>

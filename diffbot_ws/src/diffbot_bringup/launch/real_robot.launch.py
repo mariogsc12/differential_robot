@@ -65,9 +65,6 @@ def generate_launch_description():
             "launch",
             "local_localization.launch.py"
         ),
-        launch_arguments={
-            "imu_topic": "imu_data"
-        }.items()
     )
 
 

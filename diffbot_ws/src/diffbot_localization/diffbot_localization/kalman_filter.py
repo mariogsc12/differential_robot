@@ -10,7 +10,7 @@ class KalmanFilter(Node):
         super().__init__("kalman_filter")
 
         self.odom_sub = self.create_subscription(Odometry, "diffbot_controller/odom_noisy",self.odomCallback,10)
-        self.imu_sub = self.create_subscription(Imu,"imu/data", self.imuCallback, 10)
+        self.imu_sub = self.create_subscription(Imu,"imu_data", self.imuCallback, 10)
         self.odom_pub_ = self.create_publisher(Odometry, "diffbot_controller/odom_kalman",10)
 
         self.mean_ = 0.0

@@ -65,7 +65,7 @@ def generate_launch_description():
             "/imu@sensor_msgs/msg/Imu[gz.msgs.IMU"
         ],
         remappings=[
-            ("/imu", "/imu/out")
+            ("/imu", "/imu_data")
         ]
     )
 

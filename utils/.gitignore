@@ -10,3 +10,7 @@ log/
 # Ignore Visual Studio Code settings
 .vscode/
 *.json
+
+# Ignore debugging files (frames)
+*.gv
+*.pdf
