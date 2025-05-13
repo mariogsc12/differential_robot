@@ -15,7 +15,7 @@ from tf2_ros import TransformBroadcaster
 
 class NoisyController(Node):
     def __init__(self):
-        super().__init__("simple_controller")
+        super().__init__("noisy_controller")
 
         self.declare_parameter("wheel_radius",0.033)
         self.declare_parameter("wheel_separation",0.26)
@@ -37,6 +37,7 @@ class NoisyController(Node):
         self.odom_pub_ = self.create_publisher(Odometry, "diffbot_controller/odom_noisy", 10)
         self.joint_sub_ = self.create_subscription(JointState, "joint_states", self.jointCallback,10)
 
+        # Fill the Odometry message with invariant parameters 
         self.odom_msg_ = Odometry()
         self.odom_msg_.header.frame_id = "odom"
         self.odom_msg_.child_frame_id = "base_link_ekf"
@@ -45,23 +46,32 @@ class NoisyController(Node):
         self.odom_msg_.pose.pose.orientation.z = 0.0
         self.odom_msg_.pose.pose.orientation.w = 1.0
 
+        # Fill the TF message 
         self.br_ = TransformBroadcaster(self)
         self.transform_stamped_ = TransformStamped()
         self.transform_stamped_.header.frame_id = "odom"
         self.transform_stamped_.child_frame_id = "base_link_noisy"
 
+        self.prev_time_ = self.get_clock().now()
+
 
     def jointCallback(self, msg):
+        # Implements the inverse differential kinematic model
+        # Given the position of the wheels, calculates their velocitie
+        # then calculates the velocity of the robot wrt the robot frame
+        # and then converts it in the global frame and publishes the TF 
+
+        # Add noise to wheel readings
         wheel_encoder_left = msg.position[1] + np.random.normal(0,0.005)
         wheel_encoder_right = msg.position[0] + np.random.normal(0,0.005)
         
         dp_left = wheel_encoder_left - self.left_wheel_prev_pos_
         dp_right = wheel_encoder_right - self.right_wheel_prev_pos_
-        dt = Time.from_msg(msg.header.stamp) - self.perv_time_
+        dt = Time.from_msg(msg.header.stamp) - self.prev_time_
 
         self.left_wheel_prev_pos_ = msg.position[1]
         self.right_wheel_prev_pos_ = msg.position[0]
-        self.perv_time_ = Time.from_msg(msg.header.stamp)
+        self.prev_time_ = Time.from_msg(msg.header.stamp)
 
         fi_left = dp_left / (dt.nanoseconds / S_TO_NS)
         fi_right = dp_right / (dt.nanoseconds / S_TO_NS)
@@ -75,26 +85,34 @@ class NoisyController(Node):
         self.x_ += d_s * math.cos(self.theta_)
         self.y_ += d_s * math.sin(self.theta_)
 
+        
+
+	
+
+        # Compose and publish the odom message
         q = quaternion_from_euler(0,0, self.theta_)
+        q = quaternion_from_euler(0, 0, self.theta_)
+        self.odom_msg_.header.stamp = self.get_clock().now().to_msg()
+        self.odom_msg_.pose.pose.position.x = self.x_
+        self.odom_msg_.pose.pose.position.y = self.y_
         self.odom_msg_.pose.pose.orientation.x = q[0]
         self.odom_msg_.pose.pose.orientation.y = q[1]
         self.odom_msg_.pose.pose.orientation.z = q[2]
         self.odom_msg_.pose.pose.orientation.w = q[3]
-        self.odom_msg_.header.stamp = self.get_clock().now().to_msg()
-        self.odom_msg_.pose.pose.position.x = self.x_
-        self.odom_msg_.pose.pose.position.y = self.y_
+
         self.odom_msg_.twist.twist.linear.x = linear
         self.odom_msg_.twist.twist.angular.z = angular
 
-        self.transform_stamped_.transform.translation.x = self.x
-        self.transform_stamped_.transform.translation.y = self.y
-        self.transform_stamped_.transform.rotation.x = q[0]
+        self.odom_pub_.publish(self.odom_msg_)
+
+        # TF
+        self.transform_stamped_.transform.translation.x = self.x_
+        self.transform_stamped_.transform.translation.y = self.y_
         self.transform_stamped_.transform.rotation.y = q[1]
         self.transform_stamped_.transform.rotation.z = q[2]
         self.transform_stamped_.transform.rotation.w = q[3]
         self.transform_stamped_.header.stamp = self.get_clock().now().to_msg()
-        
-        self.odom_pub_.publish(self.odom_msg_)
+
         self.br_.sendTransform(self.transform_stamped_)
 
 

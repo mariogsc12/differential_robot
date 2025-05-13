@@ -1,22 +1,16 @@
 controller_manager:
   ros__parameters:
     update_rate: 100      # Hz
+    use_sim_time: true
+    
+    diffbot_controller:
+      type: diff_drive_controller/DiffDriveController
 
     joint_state_broadcaster: 
       type: joint_state_broadcaster/JointStateBroadcaster
 
     simple_velocity_controller:
       type: velocity_controllers/JointGroupVelocityController
-
-    diffbot_controller:
-      type: diff_drive_controller/DiffDriveController
-
-
-simple_velocity_controller:
-  ros__parameters:
-    joints:
-      - left_wheel_joint
-      - right_wheel_joint
 
 
 diffbot_controller:
@@ -74,3 +68,9 @@ diffbot_controller:
         min_acceleration       : -8.0   # rad/s^2
         has_jerk_limits        : false
         max_jerk               : 2.5  # rad/s^3
+
+simple_velocity_controller:
+  ros__parameters:
+    joints:
+      - left_wheel_joint
+      - right_wheel_joint

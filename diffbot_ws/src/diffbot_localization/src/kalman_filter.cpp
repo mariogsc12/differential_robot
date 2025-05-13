@@ -36,6 +36,9 @@ void KalmanFilter::odomCallback(const nav_msgs::msg::Odometry &odom)
     statePrediction();
     measurementUpdate();
 
+    // Update for the next iteration
+    last_angular_z_ = odom.twist.twist.angular.z;
+
     kalman_odom_.twist.twist.angular.z = mean_;
     odom_pub_->publish(kalman_odom_);
 }

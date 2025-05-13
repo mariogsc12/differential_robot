@@ -44,7 +44,7 @@ SimpleController::SimpleController(const std::string &name)
     transform_stamped_.header.frame_id = "odom";
     transform_stamped_.child_frame_id = "base_link";
 
-
+    prev_time_ = get_clock()->now();
 
     // RCLCPP_INFO_STREAM(get_logger(),"The conversion matrix is "<<speed_conversion_);
 
@@ -70,7 +70,7 @@ void SimpleController::jointCallback(const sensor_msgs::msg::JointState &msg){
 
     left_wheel_prev_pos_ = msg.position.at(1);
     right_wheel_prev_pos_ = msg.position.at(0);
-    prev_time_ = msg_time;
+    prev_time_ = msg.header.stamp;
 
     double fi_left = dp_left / dt.seconds();
     double fi_right = dp_right / dt.seconds();
@@ -87,25 +87,25 @@ void SimpleController::jointCallback(const sensor_msgs::msg::JointState &msg){
 
     tf2::Quaternion q;
     q.setRPY(0,0,theta_);
-    odom_msg_.pose.pose.orientation.x = q.x();
-    odom_msg_.pose.pose.orientation.y = q.y();
-    odom_msg_.pose.pose.orientation.z = q.z();
-    odom_msg_.pose.pose.orientation.w = q.w();
-    odom_msg_.header.stamp = get_clock()->now();
     odom_msg_.pose.pose.position.x = x_;
     odom_msg_.pose.pose.position.y = y_;
+    odom_msg_.pose.pose.orientation.x = q.getX();
+    odom_msg_.pose.pose.orientation.y = q.getY();
+    odom_msg_.pose.pose.orientation.z = q.getZ();
+    odom_msg_.pose.pose.orientation.w = q.getW();
     odom_msg_.twist.twist.linear.x = linear;
     odom_msg_.twist.twist.angular.z = angular;
+    odom_pub_->publish(odom_msg_);
 
+    // TF
     transform_stamped_.transform.translation.x = x_;
     transform_stamped_.transform.translation.y = y_;
-    transform_stamped_.transform.rotation.x = q.x();
-    transform_stamped_.transform.rotation.y = q.y();
-    transform_stamped_.transform.rotation.z = q.z();
-    transform_stamped_.transform.rotation.w = q.w();
+    transform_stamped_.transform.rotation.x = q.getX();
+    transform_stamped_.transform.rotation.y = q.getY();
+    transform_stamped_.transform.rotation.z = q.getZ();
+    transform_stamped_.transform.rotation.w = q.getW();
     transform_stamped_.header.stamp = get_clock()->now();
 
-    odom_pub_->publish(odom_msg_);
     transform_broadcaster_->sendTransform(transform_stamped_);
     
 }

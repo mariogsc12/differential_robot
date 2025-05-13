@@ -28,7 +28,6 @@ class SimpleController(Node):
 
         self.left_wheel_prev_pos_  = 0.0
         self.right_wheel_prev_pos_ = 0.0
-        self.perv_time_ = self.get_clock().now()
 
         self.x_ = 0.0
         self.y_ = 0.0
@@ -41,6 +40,8 @@ class SimpleController(Node):
 
         self.speed_conversion_ = np.array([[self.wheel_radius/2, self.wheel_radius/2],
                                           [self.wheel_radius/self.wheel_separation, -self.wheel_radius/self.wheel_separation]])
+        
+        self.get_logger().info("The conversion matrix is %s" %self.speed_conversion_)
         
         self.odom_msg_ = Odometry()
         self.odom_msg_.header.frame_id = "odom"
@@ -55,7 +56,8 @@ class SimpleController(Node):
         self.transform_stamped_.header.frame_id = "odom"
         self.transform_stamped_.child_frame_id = "base_link"
 
-        self.get_logger().info("The conversion matrix is %s" %self.speed_conversion_)
+        self.perv_time_ = self.get_clock().now()
+
 
     def velCallback(self, msg):
         robot_speed = np.array([[msg.twist.linear.x],

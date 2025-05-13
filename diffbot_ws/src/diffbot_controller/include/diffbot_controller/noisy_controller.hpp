@@ -1,5 +1,5 @@
-#ifndef SIMPLE_CONTROLLER_HPP
-#define SIMPLE_CONTROLLER_HPP
+#ifndef NOISY_CONTROLLER_HPP
+#define NOISY_CONTROLLER_HPP
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
