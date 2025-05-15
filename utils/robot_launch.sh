@@ -4,7 +4,6 @@
 remote_cmd="ssh mario@raspberry 'source /opt/ros/humble/setup.bash; \
 export ROS_DOMAIN_ID=2; \
 cd /home/mario/differential_robot/diffbot_ws; \
-bash ../utils/kill_ros2.sh; \
 source install/setup.bash; \
 ros2 launch diffbot_bringup real_robot.launch.py use_joystick:=false'"
 

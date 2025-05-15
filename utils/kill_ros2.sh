@@ -4,6 +4,7 @@ SCRIPT_PID=$$
 
 processes=(
   "ros2cli.daemon.daemonize"
+  "ros2-daemon"
   "rviz2"
   "gzserver"
   "gzclient"
@@ -22,7 +23,7 @@ processes=(
   "imu_republisher"
   "diffbot_utils"
   "diffbot_localization"
-  "ros2"
+  "static_transform_publisher"
 )
 
 for process in "${processes[@]}"; do
