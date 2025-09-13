@@ -21,7 +21,7 @@ export ROS_DOMAIN_ID=2; \
 cd /home/mario/REPOS/differential_robot/diffbot_ws; \
 source install/setup.bash; \
 sleep 5; \
-rviz2 -d ./src/diffbot_bringup/rviz/simulated_robot.rviz"
+rviz2 -d ./src/diffbot_description/rviz/simulated_robot.rviz"
 
 # Launch SSH ROS2 launch in a new gnome-terminal
 gnome-terminal -- bash -c "$remote_cmd; exec bash"

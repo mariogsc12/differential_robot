@@ -217,7 +217,7 @@ void loop() {
     String encoder_read = "r" + String(right_wheel_sign) + String(right_wheel_meas_vel) +
                         ",l" + String(left_wheel_sign) + String(left_wheel_meas_vel) + ",";
     
-    //Serial.println(encoder_read);
+    Serial.println(encoder_read);
     last_millis = current_millis;
     right_encoder_counter = 0;
     left_encoder_counter = 0;
