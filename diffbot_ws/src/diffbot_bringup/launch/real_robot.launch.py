@@ -51,13 +51,13 @@ def generate_launch_description():
         executable="trajectory_drawer"
     )
     
-#    witmotion_imu = IncludeLaunchDescription(
-#        os.path.join(
-#            get_package_share_directory("witmotion_ros"),
-#            "launch",
-#            "wt61c.launch.py"
-#        ),
-#    )
+    bno055_imu = Node(
+        package="bno055",
+        executable="bno055",
+        name="bno055_imu",
+        output="screen",
+        parameters=[os.path.join(get_package_share_directory("bno055"), "bno055", "params", "bno055_params.yaml")]
+    )
 
     local_localization = IncludeLaunchDescription(
         os.path.join(
@@ -74,6 +74,6 @@ def generate_launch_description():
         controller,
         trajectory,
         joystick,
-        #witmotion_imu,
+        bno055_imu,
         local_localization
     ])
