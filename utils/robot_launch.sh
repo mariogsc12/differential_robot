@@ -12,7 +12,7 @@ remote_cmd_2="ssh mario@raspberry 'source /opt/ros/humble/setup.bash; \
 export ROS_DOMAIN_ID=2; \
 cd /home/mario/differential_robot/diffbot_ws; \
 source install/setup.bash; \
-ros2 run bno055 bno055 --ros-args --params-file ~/differential_robot/diffbot_ws/src/bno055/bno055/params/bno055_params.yaml'"
+ros2 run bno055 bno055 --ros-args --params-file ~/differential_robot/diffbot_ws/src/bno055/bno055/params/bno055_params_i2c.yaml'"
 
 # Define local command to launch joystick teleop
 local_cmd_1="source /opt/ros/humble/setup.bash; \
