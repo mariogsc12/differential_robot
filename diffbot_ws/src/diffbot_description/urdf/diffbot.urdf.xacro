@@ -155,13 +155,9 @@
 
     <!-- IMU -->
     <link name="imu_link">
-        <inertial>
-            <origin xyz="0.0175 0.0175 0" rpy="0 0 0"/>
-            <mass value="0.000528415"/>
-            <inertia ixx="1.4617E-08" ixy="1.4E-10" ixz="-1.9963E-12"
-                    iyy="1.4617E-08" iyz="7.5237E-12"
-                    izz="2.3027E-08"/>
-        </inertial>
+        <xacro:inertial_box mass="0.006" x="0.035" y="0.035" z="0.015">
+            <origin xyz="0 0 0.003" rpy="0 0 0"/>
+        </xacro:inertial_box>
         <visual>
             <origin xyz="0.0175 0.0175 0" rpy="${pi/2} 0 ${pi}"/>
             <geometry>
@@ -170,7 +166,7 @@
             <material name="black"/>
         </visual>
         <collision>
-            <origin xyz="0.0175 0.0175 0" rpy="0 0 0"/>
+            <origin xyz="0.0175 0.0175 0" rpy="${pi/2} 0 ${pi}"/>
             <geometry>
                 <mesh filename="package://diffbot_description/meshes/WT901C.stl"/>
             </geometry>
