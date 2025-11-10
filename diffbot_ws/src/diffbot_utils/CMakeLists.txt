@@ -11,14 +11,21 @@ find_package(ament_cmake_python REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(twist_mux_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
 
 ament_python_install_package(${PROJECT_NAME})
 
 add_executable(trajectory_drawer src/trajectory_drawer.cpp)
 ament_target_dependencies(trajectory_drawer rclcpp geometry_msgs nav_msgs)
+
+add_executable(safety_stop src/safety_stop.cpp)
+ament_target_dependencies(safety_stop rclcpp rclcpp_action std_msgs sensor_msgs twist_mux_msgs visualization_msgs) 
 
 include_directories(include)
 
@@ -29,6 +36,7 @@ install(
 
 install(TARGETS 
   trajectory_drawer
+  safety_stop
   DESTINATION lib/${PROJECT_NAME}
 )
 
