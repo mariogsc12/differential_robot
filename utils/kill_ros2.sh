@@ -3,34 +3,28 @@
 SCRIPT_PID=$$
 
 processes=(
-  "ros2cli.daemon.daemonize"
-  "ros2-daemon"
-  "rviz2"
-  "gzserver"
-  "gzclient"
-  "robot_state_publisher"
-  "controller_server"
-  "lifecycle_manager"
-  "ros2_daemon"
-  "ros2-daemon"
-  "ros2_launch"
-  "ros2_control_node"
-  "witmotion_ros"
-  "diffbot_controller"
-  "diffbot_bringup"
-  "noisy_controller"
-  "trajectory_drawer"
-  "imu_republisher"
-  "diffbot_utils"
-  "diffbot_localization"
   "static_transform_publisher"
-  "joy_teleop"
-  "noisy_controller"
-  "controller_manager"
-  "trajectory_drawer"
+  "rviz.*"
+  "gz.*"
+  "gazebo.*"
+  ".*robot.*"
+  "controller.*"
+  "lifecycle.*"
+  ".*launch.*"
+  ".*ros2.*"
+  "diffbot*"
+  "joy.*"
+  ".*controller.*"
 )
 
-for process in "${processes[@]}"; do
-  echo "Killing: $process"
-  pkill -9 -f "$process"
+for pattern in "${processes[@]}"; do
+    pids=$(pgrep -f "$pattern" | grep -v "$SCRIPT_PID")
+  
+    if [ -n "$pids" ]; then
+        echo "Killing processes matching '$pattern':"
+        for pid in $pids; do
+        ps -p $pid -o pid,cmd --no-headers
+        kill -9 $pid 2>/dev/null
+        done
+    fi
 done
