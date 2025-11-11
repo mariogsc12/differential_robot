@@ -125,7 +125,7 @@ class SafetyStop : public rclcpp::Node
                 }
             }
             safety_stop_pub_->publish(is_safety_stop);
-            RCLCPP_INFO_STREAM(get_logger(), "Current robot state " << state_ << " - Publishing: " << is_safety_stop.data);
+            RCLCPP_DEBUG_STREAM(get_logger(), "Current robot state " << state_ << " - Publishing: " << is_safety_stop.data);
             
             if(is_first_msg_){
                 for(auto & zone : zones_.markers){
