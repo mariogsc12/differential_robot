@@ -17,8 +17,8 @@ def generate_launch_description():
 
     model_arg = DeclareLaunchArgument(name="model", default_value=os.path.join(
                                         diffbot_description, "urdf", "diffbot.urdf.xacro"
-                                        ),
-                                      description="Absolute path to robot urdf file"
+                                    ),
+                                    description="Absolute path to robot urdf file"
     )
 
     world_name_arg = DeclareLaunchArgument(name="world_name", default_value="empty")
@@ -59,7 +59,7 @@ def generate_launch_description():
                 launch_arguments={
                     "gz_args": PythonExpression(["'", world_path, " -v 4 -r'"]),
                 }.items()
-             )
+            )
 
     gz_spawn_entity = Node(
         package="ros_gz_sim",

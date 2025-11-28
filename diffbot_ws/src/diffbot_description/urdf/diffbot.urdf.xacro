@@ -161,14 +161,14 @@
         <visual>
             <origin xyz="0.0175 0.0175 0" rpy="${pi/2} 0 ${pi}"/>
             <geometry>
-                <mesh filename="package://diffbot_description/meshes/WT901C.stl"/>
+                <mesh filename="package://diffbot_description/meshes/WT901C.STL"/>
             </geometry>
             <material name="black"/>
         </visual>
         <collision>
             <origin xyz="0.0175 0.0175 0" rpy="${pi/2} 0 ${pi}"/>
             <geometry>
-                <mesh filename="package://diffbot_description/meshes/WT901C.stl"/>
+                <mesh filename="package://diffbot_description/meshes/WT901C.STL"/>
             </geometry>
         </collision>
     </link>

@@ -63,5 +63,6 @@ def generate_launch_description():
         use_sim_time_arg,
         slam_config_arg,
         slam_toolbox,
-        nav2_map_saver
+        nav2_map_saver,
+        nav2_lifecycle_manager
     ])
