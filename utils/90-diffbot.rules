@@ -2,3 +2,6 @@
 KERNEL=="ttyACM[0-9]*", SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d3", MODE:="0777", SYMLINK+="ttyESP32"
 SUBSYSTEMS=="tty", GROUP="plugdev", MODE="0660" 
 
+# LIDAR
+KERNEL=="ttyUSB*", SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE:="0777", SYMLINK+="rplidar"
+SUBSYSTEMS=="tty", GROUP="plugdev", MODE="0660"

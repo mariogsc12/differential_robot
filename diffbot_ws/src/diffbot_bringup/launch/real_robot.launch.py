@@ -12,7 +12,13 @@ def generate_launch_description():
         "use_joystick",
         default_value="False"
     )
-    use_joystick = LaunchConfiguration("use_joystick")
+
+    use_slam_arg = DeclareLaunchArgument(
+        "use_slam",
+        default_value="true"
+    )
+
+    use_slam = LaunchConfiguration("use_slam")
 
     hardware_interface = IncludeLaunchDescription(
         os.path.join(
@@ -56,7 +62,7 @@ def generate_launch_description():
         executable="bno055",
         name="bno055_imu",
         output="screen",
-        parameters=[os.path.join(get_package_share_directory("bno055"), "bno055", "params", "bno055_params.yaml")]
+        parameters=[os.path.join(get_package_share_directory("bno055"), "config", "bno055_params_i2c.yaml")]
     )
 
     local_localization = IncludeLaunchDescription(
@@ -67,13 +73,50 @@ def generate_launch_description():
         ),
     )
 
+    laser_driver = Node(
+        package="rplidar_ros",
+        executable="rplidar_node",
+        name="rplidar_node",
+        parameters=[os.path.join(get_package_share_directory("diffbot_bringup"),"config","rplidar_a1.yaml")],
+        output="screen"
+    )
+
+    localization = IncludeLaunchDescription(
+        os.path.join(
+            get_package_share_directory("diffbot_localization"),
+            "launch",
+            "global_localization.launch.py"
+        ),
+        condition=UnlessCondition(use_slam)
+    )
+
+    slam = IncludeLaunchDescription(
+        os.path.join(
+            get_package_share_directory("diffbot_mapping"),
+            "launch",
+            "slam.launch.py"
+        ),
+        condition=IfCondition(use_slam)
+    )
+
+    safety_stop = Node(
+        package="diffbot_utils",
+        executable="safety_stop",
+        output="screen"
+    )
+
 
     return LaunchDescription([
         use_joystick_arg,
+        use_slam_arg,
         hardware_interface,
         controller,
         trajectory,
         joystick,
         bno055_imu,
-        local_localization
+        local_localization,
+        laser_driver,
+        safety_stop,
+        localization,
+        slam,
     ])
