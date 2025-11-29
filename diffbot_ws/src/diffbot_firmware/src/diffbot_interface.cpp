@@ -145,7 +145,7 @@ hardware_interface::return_type DiffbotInterface::read(const rclcpp::Time &,
     std::string message;
     arduino_.ReadLine(message);
     std::stringstream ss(message);
-    RCLCPP_INFO_STREAM(rclcpp::get_logger("DiffbotInterface"), "Received command: " << ss.str());
+    RCLCPP_DEBUG_STREAM(rclcpp::get_logger("DiffbotInterface"), "Received command: " << ss.str());
     std::string res;
     int multiplier = 1;
     while(std::getline(ss, res, ','))
@@ -202,7 +202,7 @@ hardware_interface::return_type DiffbotInterface::write(const rclcpp::Time &,
   try
   {
     arduino_.Write(message_stream.str());
-    RCLCPP_INFO_STREAM(rclcpp::get_logger("DiffbotInterface"), "Sending command: " << message_stream.str());
+    RCLCPP_DEBUG_STREAM(rclcpp::get_logger("DiffbotInterface"), "Sending command: " << message_stream.str());
   }
   catch (...)
   {

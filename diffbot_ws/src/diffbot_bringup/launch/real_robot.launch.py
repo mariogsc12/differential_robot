@@ -18,6 +18,7 @@ def generate_launch_description():
         default_value="true"
     )
 
+    use_joystick = LaunchConfiguration("use_joystick")
     use_slam = LaunchConfiguration("use_slam")
 
     hardware_interface = IncludeLaunchDescription(
@@ -60,7 +61,7 @@ def generate_launch_description():
     bno055_imu = Node(
         package="bno055",
         executable="bno055",
-        name="bno055_imu",
+        name="bno055",
         output="screen",
         parameters=[os.path.join(get_package_share_directory("bno055"), "config", "bno055_params_i2c.yaml")]
     )
@@ -71,14 +72,6 @@ def generate_launch_description():
             "launch",
             "local_localization.launch.py"
         ),
-    )
-
-    laser_driver = Node(
-        package="rplidar_ros",
-        executable="rplidar_node",
-        name="rplidar_node",
-        parameters=[os.path.join(get_package_share_directory("diffbot_bringup"),"config","rplidar_a1.yaml")],
-        output="screen"
     )
 
     localization = IncludeLaunchDescription(
@@ -115,7 +108,6 @@ def generate_launch_description():
         joystick,
         bno055_imu,
         local_localization,
-        laser_driver,
         safety_stop,
         localization,
         slam,
