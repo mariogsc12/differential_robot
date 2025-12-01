@@ -70,6 +70,7 @@ remote_terminal() {
 
 remote_terminal_bno055_imu() {
     cmd="ssh ${SSH_TARGET} 'source /opt/ros/humble/setup.bash; \
+    export ROS_DOMAIN_ID=${DEFAULT_ROS_DOMAIN_ID}; \
     cd /home/mario/differential_robot/diffbot_ws; \
     source install/setup.bash; \
     ros2 launch diffbot_bringup bno055.launch.py '"
@@ -79,6 +80,7 @@ remote_terminal_bno055_imu() {
 
 remote_terminal_rplidar() {
     cmd="ssh ${SSH_TARGET} 'source /opt/ros/humble/setup.bash; \
+    export ROS_DOMAIN_ID=${DEFAULT_ROS_DOMAIN_ID}; \
     cd /home/mario/differential_robot/diffbot_ws; \
     source install/setup.bash; \
     ros2 launch diffbot_bringup rplidar_a1.launch.py '"
@@ -102,10 +104,11 @@ local_terminal_joystick() {
 
 local_terminal_rviz() {
     cmd="source /opt/ros/humble/setup.bash; \
+    export ROS_DOMAIN_ID=${DEFAULT_ROS_DOMAIN_ID}; \
     cd /home/mario/REPOS/differential_robot/diffbot_ws; \
     source install/setup.bash; \
     sleep ${DEFAULT_SLEEP_TIME}; \
-    rviz2 -d ./src/diffbot_description/rviz/simulated_robot.rviz"
+    rviz2 -d ./src/diffbot_description/rviz/slam.rviz"
 
     gnome-terminal -- bash -c "$cmd; exec bash"
 }
